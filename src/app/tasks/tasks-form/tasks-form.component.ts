@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { AlertModalService } from '../../shared/alert-modal.service';
 
 @Component({
   selector: 'app-tasks-form',
@@ -23,7 +24,8 @@ export class TasksFormComponent implements OnInit {
     public bsModalRef: BsModalRef,
     private http: HttpClient,
     private fb: FormBuilder,
-    private taskService: TasksService
+    private taskService: TasksService,
+    private modal: AlertModalService
   ) {}
 
   ngOnInit() {
@@ -49,6 +51,7 @@ export class TasksFormComponent implements OnInit {
       (novaTarefa) => {
         this.resultadoCallback(novaTarefa);
         this.bsModalRef.hide();
+        this.modal.showAlertSucess('Tarefa criada com sucesso');
       },
       (error) => {
         alert('erro');

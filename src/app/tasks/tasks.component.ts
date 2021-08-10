@@ -2,9 +2,11 @@ import { SearchService } from './../search.service';
 import { TasksFormComponent } from './tasks-form/tasks-form.component';
 import { Tarefa } from './atividade';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { TasksService } from './tasks.service.service';
-import { Subscription } from 'rxjs';
+import { empty, EMPTY, Observable, Subscription } from 'rxjs';
+import { AlertModalService } from '../shared/alert-modal.service';
+import { catchError, switchMap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tasks',
@@ -22,6 +24,9 @@ export class TasksComponent implements OnInit, OnDestroy {
   chave: string = '';
   paginaAtual = 1;
   itemsPorPagina = 5;
+  deleteModalRef!: BsModalRef;
+  tarefaSelecionada!: Tarefa;
+  tarefas$!: Observable<Tarefa[]>;
 
   ordenar(chave: string) {
     this.chave = chave;
@@ -38,7 +43,8 @@ export class TasksComponent implements OnInit, OnDestroy {
   constructor(
     private taskService: TasksService,
     private modalService: BsModalService,
-    private search: SearchService
+    private search: SearchService,
+    private alertModalService: AlertModalService
   ) {}
 
   ngOnInit(): void {
@@ -107,7 +113,51 @@ export class TasksComponent implements OnInit, OnDestroy {
     );
   }
 
-  lower(texto: string) {
-    return texto.toLowerCase().indexOf(texto.toLowerCase()) > -1;
+  lidarComErro() {
+    return this.alertModalService.showAlertDanger(
+      'Erro ao carregar as Tarefas.'
+    );
+  }
+
+  rejeitarDelete() {
+    this.deleteModalRef.hide();
+  }
+
+  emAtualização() {
+    this.tarefas$ = this.taskService.listar().pipe(
+      catchError((error) => {
+        console.error(error);
+        this.lidarComErro();
+        return empty();
+      })
+    );
+  }
+
+  modalDelete(tarefa: Tarefa) {
+    this.tarefaSelecionada = tarefa;
+
+    const result$ = this.alertModalService.showConfirm(
+      'Confirmação',
+      'Tem certeza que deseja excluir este tarefa?'
+    );
+    result$
+      .asObservable()
+      .pipe(
+        take(1),
+        switchMap((result) =>
+          result ? this.taskService.deletar(tarefa) : EMPTY
+        )
+      )
+      .subscribe(
+        (sucess) => {
+          this.ngOnInit();
+        },
+        (error) => {
+          return this.alertModalService.showAlertDanger(
+            'Erro ao remover os Tarefas.'
+          );
+          console.log(error);
+        }
+      );
   }
 }

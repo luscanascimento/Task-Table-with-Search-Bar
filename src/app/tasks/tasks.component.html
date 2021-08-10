@@ -69,7 +69,7 @@
 
               <button
                 class="deltete btn btn-outline-danger mb-1 btn-sm"
-                (click)="deletarTarefa(tarefa)"
+                (click)="modalDelete(tarefa)"
               >
                 <i class="bi bi-trash"></i>
               </button>
@@ -91,3 +91,18 @@
     </ng-template>
   </div>
 </div>
+<ng-template #deleteModal>
+  <div class="modal-body text-center">
+    <p>Tem certeza que deseja remover este item?</p>
+    <button
+      type="button"
+      class="btn btn-default"
+      (click)="deletarTarefa(tarefa)"
+    >
+      Sim
+    </button>
+    <button type="button" class="btn btn-primary" (click)="rejeitarDelete()">
+      Não
+    </button>
+  </div>
+</ng-template>
