@@ -12,8 +12,9 @@
 <div class="modal-body">
   <form
     class="form-horizontal"
-    [formGroup]="formulario"
+    [formGroup]="this.formulario"
     (ngSubmit)="onSubmit()"
+    id="tarefa"
   >
     <div class="form-group">
       <label for="titulo">Titulo</label>
@@ -67,7 +68,7 @@
         class="btn btn-outline-success"
         [disabled]="formulario.invalid"
       >
-        Criar
+        Salvar
       </button>
 
       <button

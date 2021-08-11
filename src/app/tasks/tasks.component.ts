@@ -7,6 +7,7 @@ import { TasksService } from './tasks.service.service';
 import { empty, EMPTY, Observable, Subscription } from 'rxjs';
 import { AlertModalService } from '../shared/alert-modal.service';
 import { catchError, switchMap, take } from 'rxjs/operators';
+import { CrudeService } from '../shared/crude.service';
 
 @Component({
   selector: 'app-tasks',
@@ -24,8 +25,6 @@ export class TasksComponent implements OnInit, OnDestroy {
   chave: string = '';
   paginaAtual = 1;
   itemsPorPagina = 5;
-  deleteModalRef!: BsModalRef;
-  tarefaSelecionada!: Tarefa;
   tarefas$!: Observable<Tarefa[]>;
 
   ordenar(chave: string) {
@@ -44,15 +43,12 @@ export class TasksComponent implements OnInit, OnDestroy {
     private taskService: TasksService,
     private modalService: BsModalService,
     private search: SearchService,
-    private alertModalService: AlertModalService
+    private alertModalService: AlertModalService,
+    private crude: CrudeService
   ) {}
 
   ngOnInit(): void {
-    this.taskService
-      .listar()
-      .subscribe(
-        (dados: Tarefa[]) => (this.tarefas = this.todasTarefas = dados)
-      );
+    this.obterTarefas();
     this.searchSubscribe = this.search.listenSearch().subscribe((text) => {
       this.pesquisar(text);
     });
@@ -98,66 +94,35 @@ export class TasksComponent implements OnInit, OnDestroy {
     });
   }
 
-  deletarTarefa(tarefa: Tarefa) {
-    this.taskService.deletar(tarefa).subscribe(
-      (resultado: any) => {
-        console.log('Excluido');
-        this.todasTarefas = this.todasTarefas.filter((t) => t.id != tarefa.id);
-        this.pesquisar(this.search.text);
-      },
-      (erro: any) => {
-        if (erro.status == 404) {
-          console.log('id não localizado');
-        }
-      }
-    );
-  }
-
   lidarComErro() {
     return this.alertModalService.showAlertDanger(
       'Erro ao carregar as Tarefas.'
     );
   }
 
-  rejeitarDelete() {
-    this.deleteModalRef.hide();
-  }
-
-  emAtualização() {
-    this.tarefas$ = this.taskService.listar().pipe(
-      catchError((error) => {
-        console.error(error);
-        this.lidarComErro();
-        return empty();
-      })
-    );
-  }
-
   modalDelete(tarefa: Tarefa) {
-    this.tarefaSelecionada = tarefa;
-
-    const result$ = this.alertModalService.showConfirm(
-      'Confirmação',
-      'Tem certeza que deseja excluir este tarefa?'
-    );
-    result$
+    this.alertModalService
+      .showConfirm('Confirmação', 'Tem certeza que deseja excluir este tarefa?')
       .asObservable()
       .pipe(
         take(1),
         switchMap((result) =>
-          result ? this.taskService.deletar(tarefa) : EMPTY
+          result ? this.crude.deletarFirestore(tarefa) : EMPTY
         )
       )
       .subscribe(
-        (sucess) => {
-          this.ngOnInit();
-        },
+        (sucess) => {},
         (error) => {
+          console.log(error);
           return this.alertModalService.showAlertDanger(
             'Erro ao remover os Tarefas.'
           );
-          console.log(error);
         }
       );
   }
+
+  obterTarefas = () =>
+    this.crude.listarFirestore().subscribe((dados: Tarefa[]) => {
+      this.tarefas = this.todasTarefas = dados;
+    });
 }

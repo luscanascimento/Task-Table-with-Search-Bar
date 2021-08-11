@@ -1,10 +1,10 @@
 import { TasksService } from './../tasks.service.service';
 import { Tarefa, listaDePrioridades, listaDeStatus } from './../atividade';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { AlertModalService } from '../../shared/alert-modal.service';
+import { CrudeService } from '../../shared/crude.service';
 
 @Component({
   selector: 'app-tasks-form',
@@ -22,10 +22,10 @@ export class TasksFormComponent implements OnInit {
 
   constructor(
     public bsModalRef: BsModalRef,
-    private http: HttpClient,
     private fb: FormBuilder,
     private taskService: TasksService,
-    private modal: AlertModalService
+    private modal: AlertModalService,
+    private crude: CrudeService
   ) {}
 
   ngOnInit() {
@@ -46,29 +46,19 @@ export class TasksFormComponent implements OnInit {
     });
   }
 
-  submit() {
-    this.taskService.salvar(this.formulario.value as Tarefa).subscribe(
-      (novaTarefa) => {
+  onSubmit() {
+    if (this.formulario.valid) {
+      this.crude.salvarFirestore(this.formulario.value);
+      /*subscribe( (novaTarefa: Tarefa) => {
         this.resultadoCallback(novaTarefa);
         this.bsModalRef.hide();
         this.modal.showAlertSucess('Tarefa criada com sucesso');
-      },
-      (error) => {
-        alert('erro');
-      }
-    );
-  }
-
-  resetar() {
-    this.formulario.reset();
-  }
-
-  onSubmit() {
-    if (this.formulario.valid) {
-      this.submit();
-      this.mostrarSucess = true;
+      },);*/
+      this.bsModalRef.hide();
+      this.modal.showAlertSucess('Tarefa criada com sucesso');
     } else {
       this.verificaValidacoesForm(this.formulario);
+      this.modal.showAlertDanger('Erro ao tentar criar tarefa');
     }
   }
 
@@ -82,4 +72,32 @@ export class TasksFormComponent implements OnInit {
       }
     });
   }
+
+  resetar() {
+    this.formulario.reset();
+  }
+
+  /*
+  submit() {
+    this.taskService.salvar(this.formulario.value as Tarefa).subscribe(
+      (novaTarefa) => {
+        this.resultadoCallback(novaTarefa);
+        this.bsModalRef.hide();
+        this.modal.showAlertSucess('Tarefa criada com sucesso');
+      },
+      (error) => {
+        alert('erro');
+      }
+    );
+  }
+ 
+  onSubmit() {
+    if (this.formulario.valid) {
+      this.submit();
+      this.mostrarSucess = true;
+    } else {
+      this.verificaValidacoesForm(this.formulario);
+    }
+  }
+*/
 }

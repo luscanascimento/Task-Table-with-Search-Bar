@@ -17,9 +17,6 @@
     <table class="table table-hover">
       <thead>
         <tr>
-          <th (click)="ordenar('id')">
-            #<span *ngIf="chave == 'id'">{{ reverse ? "▲" : "▼" }}</span>
-          </th>
           <th (click)="ordenar('titulo')">
             Titulo
             <span *ngIf="chave == 'titulo'">{{ reverse ? "▲" : "▼" }}</span>
@@ -52,7 +49,6 @@
             index as i
           "
         >
-          <td>{{ tarefa.id }}</td>
           <td>{{ tarefa.titulo }}</td>
           <td>{{ tarefa.descricao }}</td>
           <td>{{ tarefa.prioridade }}</td>
@@ -91,18 +87,3 @@
     </ng-template>
   </div>
 </div>
-<ng-template #deleteModal>
-  <div class="modal-body text-center">
-    <p>Tem certeza que deseja remover este item?</p>
-    <button
-      type="button"
-      class="btn btn-default"
-      (click)="deletarTarefa(tarefa)"
-    >
-      Sim
-    </button>
-    <button type="button" class="btn btn-primary" (click)="rejeitarDelete()">
-      Não
-    </button>
-  </div>
-</ng-template>

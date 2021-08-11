@@ -11,6 +11,12 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { TasksModule } from './tasks/tasks.module';
 import { OrderModule } from 'ngx-order-pipe';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { AngularFireModule } from '@angular/fire';
+import {
+  AngularFirestore,
+  AngularFirestoreModule,
+} from '@angular/fire/firestore';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent],
@@ -25,6 +31,8 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
     TasksModule,
     OrderModule,
     PaginationModule.forRoot(),
+    AngularFirestoreModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
   ],
   providers: [],
   bootstrap: [AppComponent],

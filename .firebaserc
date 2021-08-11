@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "desafio-todo"
+  },
+  "targets": {
+    "desafio-todo": {
+      "hosting": {
+        "desafio": [
+          "desafio-todo"
+        ]
+      }
+    }
   }
 }
