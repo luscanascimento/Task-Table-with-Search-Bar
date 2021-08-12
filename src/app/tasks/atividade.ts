@@ -11,26 +11,33 @@ export enum Status {
   EM_ANDAMENTO = 'em_andamento',
   REALIZADO = 'realizado',
 }
+
+export const StatusText = {
+  [Status.CANCELADO]: 'Cancelado',
+  [Status.EM_ANDAMENTO]: 'Em andamento',
+  [Status.REALIZADO]: 'Realizado',
+};
+
 export const listaDeStatus = [
   {
-    text: 'Cancelado',
+    text: StatusText[Status.CANCELADO],
     value: Status.CANCELADO,
   },
   {
-    text: 'Em Andamento',
+    text: StatusText[Status.EM_ANDAMENTO],
     value: Status.EM_ANDAMENTO,
   },
   {
-    text: 'Realizado',
+    text: StatusText[Status.REALIZADO],
     value: Status.REALIZADO,
   },
 ];
 export enum Prioridade {
-  UM = 'um',
-  DOIS = 'dois',
-  TRES = 'tres',
-  QUATRO = 'quatro',
-  CINCO = 'cinco',
+  UM = '1',
+  DOIS = '2',
+  TRES = '3',
+  QUATRO = '4',
+  CINCO = '5',
 }
 export const listaDePrioridades = [
   { text: '1', value: Prioridade.UM },

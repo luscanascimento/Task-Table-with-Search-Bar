@@ -1,12 +1,11 @@
 import { SearchService } from './../search.service';
 import { TasksFormComponent } from './tasks-form/tasks-form.component';
-import { Tarefa } from './atividade';
+import { Tarefa, StatusText } from './atividade';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { TasksService } from './tasks.service.service';
-import { empty, EMPTY, Observable, Subscription } from 'rxjs';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { EMPTY, Observable, Subscription } from 'rxjs';
 import { AlertModalService } from '../shared/alert-modal.service';
-import { catchError, switchMap, take } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { CrudeService } from '../shared/crude.service';
 
 @Component({
@@ -40,12 +39,15 @@ export class TasksComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private taskService: TasksService,
     private modalService: BsModalService,
     private search: SearchService,
     private alertModalService: AlertModalService,
     private crude: CrudeService
   ) {}
+
+  resolveStatusText(tarefa: Tarefa) {
+    return StatusText[tarefa.status];
+  }
 
   ngOnInit(): void {
     this.obterTarefas();

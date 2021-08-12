@@ -12,14 +12,14 @@ import { TasksModule } from './tasks/tasks.module';
 import { OrderModule } from 'ngx-order-pipe';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { AngularFireModule } from '@angular/fire';
-import {
-  AngularFirestore,
-  AngularFirestoreModule,
-} from '@angular/fire/firestore';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
+import * as Highcharts from 'highcharts';
+import { ChartComponent } from './home/chart/chart.component';
+import { ChartColumnComponent } from './home/chart-column/chart-column.component';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent],
+  declarations: [AppComponent, HomeComponent, ChartComponent, ChartColumnComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
