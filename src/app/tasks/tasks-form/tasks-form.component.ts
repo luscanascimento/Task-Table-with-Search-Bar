@@ -1,10 +1,9 @@
-import { TasksService } from './../tasks.service.service';
 import { Tarefa, listaDePrioridades, listaDeStatus } from './../atividade';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { AlertModalService } from '../../shared/alert-modal.service';
-import { CrudeService } from '../../shared/crude.service';
+import { AtividadesService } from '../../shared/atividades.service';
 
 @Component({
   selector: 'app-tasks-form',
@@ -23,9 +22,8 @@ export class TasksFormComponent implements OnInit {
   constructor(
     public bsModalRef: BsModalRef,
     private fb: FormBuilder,
-    private taskService: TasksService,
     private modal: AlertModalService,
-    private crude: CrudeService
+    private crude: AtividadesService
   ) {}
 
   ngOnInit() {

@@ -1,10 +1,9 @@
-export interface Tarefa {
-  id: string;
+import { BaseModel } from '../shared/crude.service';
+export interface Tarefa extends BaseModel {
   titulo: string;
   descricao: string;
   prioridade: Prioridade;
   status: Status;
-  dataDeCriacao: string | Date;
 }
 export enum Status {
   CANCELADO = 'cancelado',

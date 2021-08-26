@@ -6,7 +6,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { EMPTY, Observable, Subscription } from 'rxjs';
 import { AlertModalService } from '../shared/alert-modal.service';
 import { switchMap, take } from 'rxjs/operators';
-import { CrudeService } from '../shared/crude.service';
+import { AtividadesService } from '../shared/atividades.service';
 
 @Component({
   selector: 'app-tasks',
@@ -42,7 +42,7 @@ export class TasksComponent implements OnInit, OnDestroy {
     private modalService: BsModalService,
     private search: SearchService,
     private alertModalService: AlertModalService,
-    private crude: CrudeService
+    private crude: AtividadesService
   ) {}
 
   resolveStatusText(tarefa: Tarefa) {

@@ -1,73 +1,60 @@
-import { Injectable } from '@angular/core';
 import {
   AngularFirestore,
   DocumentChangeAction,
+  QueryDocumentSnapshot,
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { IChartData } from '../home/chart/IChartData';
-import { Tarefa, listaDeStatus, listaDePrioridades } from '../tasks/atividade';
 
-const COLLECTION_NAME = 'tarefas';
+export interface BaseModel {
+  id: string;
+  dataDeCriacao: string | Date;
+}
 
-@Injectable({
-  providedIn: 'root',
-})
-export class CrudeService {
-  constructor(private firestore: AngularFirestore) {}
+export abstract class CrudeService<T extends BaseModel> {
+  constructor(
+    protected collectionName: string,
+    protected firestore: AngularFirestore
+  ) {}
 
-  salvarFirestore(tarefa: Tarefa) {
-    const { id, ...payload } = tarefa;
-    if (tarefa?.id == null) {
-      this.firestore.collection(COLLECTION_NAME).add(payload);
+  protected getCollection() {
+    return this.firestore.collection<T>(this.collectionName);
+  }
+
+  salvarFirestore(model: T) {
+    const { id, ...payload } = model;
+    if (model?.id == null) {
+      this.getCollection().add(payload as T);
     } else {
       this.firestore
-        .collection(COLLECTION_NAME)
+        .collection(this.collectionName)
         .doc(id)
         .set(payload, { merge: true });
     }
   }
 
-  listarFirestore(): Observable<Tarefa[]> {
-    return this.firestore
-      .collection<Tarefa>(COLLECTION_NAME)
+  listarFirestore(): Observable<T[]> {
+    return this.getCollection()
       .snapshotChanges()
-      .pipe(map((tarefas) => tarefas.map(this.mapearReferenciaParaTarefa)));
+      .pipe(map((models) => models.map(this.mapearReferencia.bind(this))));
   }
 
-  deletarFirestore(tarefa: Tarefa) {
-    return this.firestore.collection(COLLECTION_NAME).doc(tarefa.id).delete();
+  deletarFirestore(model: T) {
+    return this.getCollection().doc(model.id).delete();
   }
 
-  contaAtividadesPorStatus(): Observable<IChartData[]> {
-    return this.listarFirestore().pipe(
-      map((tarefas) =>
-        listaDeStatus.map((status) => ({
-          name: status.text,
-          y: tarefas.filter((t) => t.status === status.value).length,
-        }))
-      )
-    );
+  protected mapearReferencia(modelRef: DocumentChangeAction<T>): T {
+    const doc = modelRef?.payload?.doc;
+    return this.mapearReferenciaSnapshot(doc);
   }
 
-  contaAtividadesPorPrioridade(): Observable<IChartData[]> {
-    return this.listarFirestore().pipe(
-      map((tarefas) =>
-        listaDePrioridades.map((prioridades) => ({
-          name: prioridades.text,
-          y: tarefas.filter((t) => t.prioridade === prioridades.value).length,
-        }))
-      )
-    );
-  }
-
-  private mapearReferenciaParaTarefa(tarefaRef: DocumentChangeAction<Tarefa>) {
-    const doc = tarefaRef.payload.doc;
+  protected mapearReferenciaSnapshot(doc: QueryDocumentSnapshot<T>): T {
     const data = doc.data();
     data.id = doc.id;
     const timestamp = data.dataDeCriacao as any;
-    if (typeof data.dataDeCriacao === 'object')
+    if (typeof data.dataDeCriacao === 'object') {
       data.dataDeCriacao = new Date(timestamp?.toMillis());
+    }
     return data;
   }
 }

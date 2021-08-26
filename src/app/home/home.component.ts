@@ -1,7 +1,6 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { CrudeService } from '../shared/crude.service';
 import { IChartData } from './chart/IChartData';
+import { AtividadesService } from '../shared/atividades.service';
 
 @Component({
   selector: 'app-home',
@@ -14,18 +13,20 @@ export class HomeComponent implements OnInit {
   isLoading = false;
   priorityData: IChartData[] = [];
 
-  constructor(private crude: CrudeService) {}
+  constructor(private atividadesService: AtividadesService) {}
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.crude.contaAtividadesPorStatus().subscribe((tarefasAgrupadas) => {
-      this.data = tarefasAgrupadas;
-      this.isLoading = false;
-    });
-
-    this.crude.contaAtividadesPorPrioridade().subscribe((tarefasAgrupadas) => {
-      this.dados = tarefasAgrupadas;
-    });
-    debugger;
+    this.atividadesService
+      .contaAtividadesPorStatus()
+      .subscribe((tarefasAgrupadas: IChartData[]) => {
+        this.data = tarefasAgrupadas;
+        this.isLoading = false;
+      });
+    this.atividadesService
+      .contaAtividadesPorPrioridade()
+      .subscribe((tarefasAgrupadas: IChartData[]) => {
+        this.dados = tarefasAgrupadas;
+      });
   }
 }

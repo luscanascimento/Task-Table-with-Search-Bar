@@ -1,0 +1,32 @@
+<body>
+  <div class="wrapper fadeInDown">
+    <div id="formContent">
+      <div>
+        <form>
+          <div>
+            <input
+              [(ngModel)]="credenciais.usuario"
+              type="email"
+              id="usuario"
+              name="usuario"
+              placeholder="Login"
+            />
+          </div>
+          <div>
+            <input
+              [(ngModel)]="credenciais.senha"
+              type="password"
+              id="passowrd"
+              name="senha"
+              placeholder="Senha"
+            />
+          </div>
+          <div id="formFooter">
+            <a class="underlineHover" href="/create">Criar Conta</a>
+          </div>
+          <input type="submit" class="fadeIn fourth" (click)="fazerLogin()" />
+        </form>
+      </div>
+    </div>
+  </div>
+</body>

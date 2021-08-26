@@ -84,6 +84,7 @@ export class ChartColumnComponent implements OnInit {
   ngOnInit(): void {
     this.inicializaGrafico();
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (this.chart) this.atualizaGrafico(changes);
   }

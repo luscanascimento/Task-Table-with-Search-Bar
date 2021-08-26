@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "site": "https://desafio-todo.web.app/",
     "public": "dist/desafio",
     "ignore": [
       "firebase.json",

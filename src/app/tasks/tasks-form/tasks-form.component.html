@@ -56,7 +56,7 @@
     <div class="form-group">
       <label for="formulario">Status</label>
       <select class="form-control mb-1" id="status" formControlName="status">
-        <option *ngFor="let status of statusList" [ngValue]="status.text">
+        <option *ngFor="let status of statusList" [ngValue]="status.value">
           {{ status.text }}
         </option>
       </select>
