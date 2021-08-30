@@ -19,6 +19,7 @@ import { ChartColumnComponent } from './home/chart-column/chart-column.component
 import { LoginComponent } from './login/login.component';
 import { CreateUserComponent } from './login/create-user/create-user.component';
 import { AuthGuard } from './login/guard/auth-guard';
+import { WhatsappModule } from './whatsapp/src/whatsapp.module';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { AuthGuard } from './login/guard/auth-guard';
     AngularFirestoreModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     ReactiveFormsModule,
+    WhatsappModule,
   ],
   providers: [AuthGuard],
   bootstrap: [AppComponent],
